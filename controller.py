@@ -2,6 +2,7 @@ import numpy as np
 
 from annealing_helper_functions import distance, changepath, simulated_annealing
 from xml_parse import parse_xml_graph
+from timer import Timer
 
 graph = parse_xml_graph('fri26.xml')
 #Square matrix
@@ -21,6 +22,10 @@ reanneal = 100
 iterr = 100000
 nswaps = 3
 
-solution, history = simulated_annealing(graph, distance, initial_path, initial_temp, cool, reanneal, iterr, changepath, nswaps)
-print "Calculated path: " + str(solution)
-print "Calculated path length: " + str(distance(graph, solution))
+for iterr in [10**x for x in [3,4,5,6]]:
+	with Timer() as t:
+		solution, history = simulated_annealing(graph, distance, initial_path, initial_temp, cool, reanneal, iterr, changepath, nswaps)
+	print "\nIterations: " + str(iterr)
+	print "Calculated path: " + str(solution)
+	print "Calculated path length: " + str(distance(graph, solution))
+	print "Time: " + str(t.interval)
