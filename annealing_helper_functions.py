@@ -1,5 +1,4 @@
 import numpy as np
-import operator
 import math
 
 # Functions below adapted from ac290_tutorial2_simulated_annealing-student.ipynb
