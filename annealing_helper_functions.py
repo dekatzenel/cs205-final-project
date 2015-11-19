@@ -1,6 +1,9 @@
 import numpy as np
 import math
 
+def prob(a, b):
+    return np.exp(a / b)
+
 # Functions below adapted from ac290_tutorial2_simulated_annealing-student.ipynb
 
 #Assumes citypath is a list/1D array of city numeric indices
@@ -41,9 +44,25 @@ def changepath(inputcities, n_swaps):
         cities = swappedCities.copy()
     return cities
 
-def simulated_annealing(graph, function, initial_X, initial_temp, cool,
-                        reanneal, iterr, swap_function, nswaps):
-    accepted = 0
+def anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps):
+    # Stepsize
+    L = np.sqrt(T)
+    # Randomly update path
+    X_star = swap_function(X, nswaps)
+    # Evaluate E
+    new_E = function(graph, X_star)
+    delta_E = new_E - prev_E
+    
+    # Flip a coin
+    if np.random.uniform() < prob(-delta_E, T):
+        history.append(new_E)
+        # Copy X_star to X
+        X = X_star.copy()
+        prev_E = new_E
+    return X, prev_E, delta_E, history
+
+def simulated_annealing(graph, function, initial_X, initial_temp, nbefore, iterr, 
+                        swap_function, nswaps):
     X = initial_X.copy()
     T = initial_temp
     
@@ -53,33 +72,9 @@ def simulated_annealing(graph, function, initial_X, initial_temp, cool,
     history.append(prev_E)
     
     for i in xrange(iterr):
-        # Stepsize
-        L = np.sqrt(T)
-        # Randomly update path
-        X_star = swap_function(X, nswaps)
-        # Evaluate E
-        new_E = function(graph, X_star)
-        delta_E = new_E - prev_E
-        
-        # Flip a coin
-        U = np.random.uniform()
-        if U < np.exp(-delta_E / T):
-            accepted += 1
-            history.append(new_E)
-            # Copy X_star to X
-            X = X_star.copy()
-            prev_E = new_E
+        X, prev_E, delta_E, history = anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps)            
 
-        # Check to cool down
-        if accepted % reanneal == 0:
-            T *= cool
-            if T < 0.001: # Reheat
-                T = 1.
-            
     return X, history
-
-def prob(a, b):
-    return np.exp(a / b)
 
 # Adapted from Lecture14_Parallel_Tempering_and_Emcee.ipynb
 def parallel_tempering(graph, function, initial_Xs, initial_temps, 
@@ -92,40 +87,29 @@ def parallel_tempering(graph, function, initial_Xs, initial_temps,
     nsystems = len(initial_temps)
     Xs = initial_Xs
     Ts = initial_temps
-    P = [lambda d: np.exp(d / Ts[c]) for c in range(nsystems)]
     prev_Es = [function(graph, Xs[i]) for i in range(nsystems)]
+    delta_Es = [0] * nsystems
     history = [[] for i in xrange(nsystems)]
 
-    for c in xrange(nsystems):
-        history[c].append(prev_Es[c])
+    for i in xrange(nsystems):
+        history[i].append(prev_Es[i])
 
     for step in range(iterr):
-        # Run nbefore steps of simulated annealing
-        X_stars = [swap_function(Xs[i], nswaps) for i in xrange(nsystems)]
-        new_Es = [function(graph, X_stars[i]) for i in xrange(nsystems)]
-        delta_Es = [i - j for i, j in zip(new_Es, prev_Es)]
-        
-        # Do a normal update
-        for c in range(nsystems):
-            if np.random.uniform() < P[c](-delta_Es[c]):
-                history[c].append(new_Es[c])
-                Xs[c] = X_stars[c]
-                prev_Es[c] = new_Es[c]
+        for i in range(nsystems):
+            # Run nbefore steps of simulated annealing
+            Xs[i], prev_Es[i], delta_Es[i], history[i] = anneal_once(graph, function, Xs[i], Ts[i], 
+                                                        prev_Es[i], history[i], 
+                                                        swap_function, nswaps)
 
         # Decide which chains, if any, to exchange
         if step % nbefore == 0:
-            for c in range(nsystems - 1):
+            for i in range(nsystems - 1):
                 # Acceptance probability
-                A = min(1, np.exp(((delta_Es[c] - delta_Es[c+1])/Ts[c]) +
-                                  ((delta_Es[c+1] - delta_Es[c])/Ts[c+1])))
-
+                A = np.exp(min(np.log(1), ((delta_Es[i] - delta_Es[i+1])/Ts[i]) +
+                                  ((delta_Es[i+1] - delta_Es[i])/Ts[i+1])))
                 if np.random.uniform() < A:
                     # Exchange most recent updates and paths
-                    prev = prev_Es[c]
-                    prev_Es[c] = prev_Es[c+1]
-                    prev_Es[c+1] = prev
-                    prev = Xs[c]
-                    Xs[c] = Xs[c+1]
-                    Xs[c+1] = prev
+                    prev_Es[i], prev_Es[i+1] = prev_Es[i+1], prev_Es[i]
+                    Xs[i], Xs[i+1] = Xs[i+1], Xs[i]
 
     return Xs[0], history[0]
