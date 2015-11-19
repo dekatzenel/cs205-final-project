@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 # Functions below adapted from ac290_tutorial2_simulated_annealing-student.ipynb
 
@@ -37,11 +38,11 @@ def changepath(inputcities, n_swaps):
     # Make n_swaps number of swaps
     for i in range(n_swaps):
         swappedCities = swapindex(cities)
-        cities=swappedCities.copy()
+        cities = swappedCities.copy()
     return cities
 
-def simulated_annealing(graph, function, initial_X, initial_temp, cool, reanneal, iterr, swap_function, nswaps):
-    
+def simulated_annealing(graph, function, initial_X, initial_temp, cool,
+                        reanneal, iterr, swap_function, nswaps):
     accepted = 0
     X = initial_X.copy()
     T = initial_temp
@@ -76,3 +77,55 @@ def simulated_annealing(graph, function, initial_X, initial_temp, cool, reanneal
                 T = 1.
             
     return X, history
+
+def prob(a, b):
+    return np.exp(a / b)
+
+# Adapted from Lecture14_Parallel_Tempering_and_Emcee.ipynb
+def parallel_tempering(graph, function, initial_Xs, initial_temps, 
+                       iterr, swap_function, nswaps, nbefore):
+    # Make sure inputs are ok
+    assert(len(initial_temps) == len(initial_Xs)), "Mismatched input dimensions"
+    assert(initial_temps[0] == 1), "First temperature should be one"
+
+    # Initialize stuff
+    nsystems = len(initial_temps)
+    Xs = initial_Xs
+    Ts = initial_temps
+    P = [lambda d: np.exp(d / Ts[c]) for c in range(nsystems)]
+    prev_Es = [function(graph, Xs[i]) for i in range(nsystems)]
+    history = [[] for i in xrange(nsystems)]
+
+    for c in xrange(nsystems):
+        history[c].append(prev_Es[c])
+
+    for step in range(iterr):
+        # Run nbefore steps of simulated annealing
+        X_stars = [swap_function(Xs[i], nswaps) for i in xrange(nsystems)]
+        new_Es = [function(graph, X_stars[i]) for i in xrange(nsystems)]
+        delta_Es = [i - j for i, j in zip(new_Es, prev_Es)]
+        
+        # Do a normal update
+        for c in range(nsystems):
+            if np.random.uniform() < P[c](-delta_Es[c]):
+                history[c].append(new_Es[c])
+                Xs[c] = X_stars[c]
+                prev_Es[c] = new_Es[c]
+
+        # Decide which chains, if any, to exchange
+        if step % nbefore == 0:
+            for c in range(nsystems - 1):
+                # Acceptance probability
+                A = min(1, np.exp(((delta_Es[c] - delta_Es[c+1])/Ts[c]) +
+                                  ((delta_Es[c+1] - delta_Es[c])/Ts[c+1])))
+
+                if np.random.uniform() < A:
+                    # Exchange most recent updates and paths
+                    prev = prev_Es[c]
+                    prev_Es[c] = prev_Es[c+1]
+                    prev_Es[c+1] = prev
+                    prev = Xs[c]
+                    Xs[c] = Xs[c+1]
+                    Xs[c+1] = prev
+
+    return Xs[0], history[0]
