@@ -45,8 +45,6 @@ def changepath(inputcities, n_swaps):
     return cities
 
 def anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps):
-    # Stepsize
-    L = np.sqrt(T)
     # Randomly update path
     X_star = swap_function(X, nswaps)
     # Evaluate E
