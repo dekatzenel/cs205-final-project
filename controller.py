@@ -1,8 +1,9 @@
 import numpy as np
 
-from annealing_helper_functions import distance, changepath, simulated_annealing, parallel_tempering
-from xml_parse import parse_xml_graph
+from annealing_helper_functions import distance, changepath, simulated_annealing, serial_parallel_tempering
+from parallelism import parallel_parallel_tempering
 from timer import Timer
+from xml_parse import parse_xml_graph
 
 graph = parse_xml_graph('fri26.xml')
 #Square matrix
@@ -38,11 +39,23 @@ nsystems = 3
 initial_paths = [np.random.permutation(size) for i in xrange(nsystems)]
 initial_temps = [1., 5., 10.]
 
-# Run parallel tempering
-print "\nParallel Tempering\n"
+# Run serial parallel tempering
+print "\nSerial Parallel Tempering\n"
 for iterr in [10**x for x in [3,4,5]]:
 	with Timer() as t:
-		solution, history = parallel_tempering(graph, distance, initial_paths, initial_temps,
+		solution, history = serial_parallel_tempering(graph, distance, initial_paths, initial_temps,
+											   iterr, changepath, nswaps, nbefore)
+
+	print "Iterations: {:.2E}".format(iterr)
+	print "Calculated path: " + str(solution)
+	print "Calculated path length: " + str(distance(graph, solution)) 
+	print "Time: " + str(t.interval) + "\n"
+	
+# Run parallel parallel tempering
+print "\nParallel Parallel Tempering\n"
+for iterr in [10**x for x in [3,4,5]]:
+	with Timer() as t:
+		solution, history = parallel_parallel_tempering(graph, distance, initial_paths, initial_temps,
 											   iterr, changepath, nswaps, nbefore)
 
 	print "Iterations: {:.2E}".format(iterr)
