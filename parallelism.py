@@ -12,22 +12,22 @@ def parallel_tempering(graph, function, X, T, iterr, prev_E, history, swap_funct
             #Each process can swap with subsequent processes
             queues[process_number].put(delta_E)
             queues[process_number].put(T)
-            for i in range(process_number + 1, len(queues)):
-                # Acceptance probability
-                next_delta_E = queues[i].get()
-                next_T = queues[i].get()
+            # Acceptance probability
+            if process_number < len(queues) - 1:
+                next_delta_E = queues[process_number + 1].get()
+                next_T = queues[process_number + 1].get()
                 A = np.exp(min(np.log(1), ((delta_E - next_delta_E)/T) +
                                   ((next_delta_E - delta_E)/next_T)))
-                #TODO: Fix the below!!!!
-                #The below is the correct condition for initiating the swap. Need to check the condition for receiving the swap, also worry about ordering. Might need synchronization mechanisms.
-                if np.random.uniform() < A:
-                    # Exchange most recent updates and paths
-                    queues[process_number].put((True, i))
-                    prev_Es[i], prev_Es[i+1] = prev_Es[i+1], prev_Es[i]
-                    Xs[i], Xs[i+1] = Xs[i+1], Xs[i]
+            #TODO: Fix the below!!!!
+            #The below is the correct condition for initiating the swap. Need to check the condition for receiving the swap, also worry about ordering. Might need synchronization mechanisms.
             #The below is wrong because can't guarantee the order of the i's for reading
             for i in range(process_number + 1):
                 queues[i].get()
+            if np.random.uniform() < A:
+                # Exchange most recent updates and paths
+                queues[process_number].put((True, i))
+                prev_Es[i], prev_Es[i+1] = prev_Es[i+1], prev_Es[i]
+                Xs[i], Xs[i+1] = Xs[i+1], Xs[i]
 
 
 def parallel_parallel_tempering(graph, function, initial_Xs, initial_temps, 
