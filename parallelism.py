@@ -50,8 +50,11 @@ def parallel_tempering(graph, function, X, T, iterr, prev_E, history, swap_funct
                     pipes_swap[-1].send(False)
                     #print "swap send False from {0} {1}".format(process_number, step)
 
+    print "finished iterating process {0}".format(process_number)
     if process_number == 0:
         send_ret_val.send([X, history])
+    print "what the fuck, process {}".format(process_number)
+    return
 
 def parallel_parallel_tempering(graph, function, initial_Xs, initial_temps, 
                                 iterr, swap_function, nswaps, nbefore):
@@ -98,6 +101,7 @@ def parallel_parallel_tempering(graph, function, initial_Xs, initial_temps,
         
     for p in processes:
         p.join()
+        print "joined " + str(p)
 
     #Return final X and history from thread where T = 1
     return recv_ret_val.recv()
