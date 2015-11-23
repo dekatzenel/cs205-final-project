@@ -13,24 +13,20 @@ def parallel_tempering(graph, function, X, T, iterr, prev_E, history, swap_funct
         # Decide which chains, if any, to exchange
         if step % nbefore == 0:
             #Each process can swap with subsequent processes
-            #print "put for {0} {1}".format(process_number, step)
-            queues_A[process_number].put(delta_E)
-            queues_A[process_number].put(T)
+            if process_number > 0:
+                queues_A[process_number].put(delta_E)
+                queues_A[process_number].put(T)
             # Acceptance probability
             if process_number < process_count - 1:
-                #print "get from {0} {1} initiated".format(process_number, step)
                 next_delta_E = queues_A[process_number + 1].get()
                 next_T = queues_A[process_number + 1].get()
-                #print "get from {0} {1} complete".format(process_number, step)
                 A = np.exp(min(np.log(1), ((delta_E - next_delta_E)/T) +
                                   ((next_delta_E - delta_E)/next_T)))
 
             #Finish any started swap before going to next one
             if process_number > 0:
                 #Check if need to swap with prior process
-                #print "inititate swap recv from {0} {1}".format(process_number, step)
                 swap_bool = pipes_swap[0].recv()
-                #print "swap recv from {0} {1} completed".format(process_number, step)
                 if swap_bool:
                     #If so, publish info then retrieve info
                     pipes_swap[0].send([prev_E, X])
@@ -41,19 +37,15 @@ def parallel_tempering(graph, function, X, T, iterr, prev_E, history, swap_funct
                 if np.random.uniform() < A:
                     #Swap is happening
                     pipes_swap[-1].send(True)
-                    #print "swap send True from {0} {1}".format(process_number, step)
                     #Send info to next process, then retrieve info
                     pipes_swap[-1].send([prev_E, X])
                     prev_E, X = pipes_swap[-1].recv()
                 else:
                     #No swap necessary
                     pipes_swap[-1].send(False)
-                    #print "swap send False from {0} {1}".format(process_number, step)
 
-    print "finished iterating process {0}".format(process_number)
     if process_number == 0:
         send_ret_val.send([X, history])
-    print "what the fuck, process {}".format(process_number)
     return
 
 def parallel_parallel_tempering(graph, function, initial_Xs, initial_temps, 
@@ -101,7 +93,6 @@ def parallel_parallel_tempering(graph, function, initial_Xs, initial_temps,
         
     for p in processes:
         p.join()
-        print "joined " + str(p)
 
     #Return final X and history from thread where T = 1
     return recv_ret_val.recv()

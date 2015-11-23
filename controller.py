@@ -23,7 +23,7 @@ nbefore = 100
 nswaps = 3
 
 # Run simulated annealing
-"""print "\nSimulated Annealing\n"
+print "\nSimulated Annealing\n"
 for iterr in [10**x for x in [3,4,5]]:
 	with Timer() as t:
 		solution, history = simulated_annealing(graph, distance, initial_path, 
@@ -33,14 +33,14 @@ for iterr in [10**x for x in [3,4,5]]:
 	print "Calculated path: " + str(solution)
 	print "Calculated path length: " + str(distance(graph, solution))
 	print "Time: " + str(t.interval) + "\n"
-"""
+
 # Initial values for parallel tempering
 nsystems = 3
 initial_paths = [np.random.permutation(size) for i in xrange(nsystems)]
 initial_temps = [1., 5., 10.]
 
 # Run serial parallel tempering
-"""print "\nSerial Parallel Tempering\n"
+print "\nSerial Parallel Tempering\n"
 for iterr in [10**x for x in [3,4,5]]:
 	with Timer() as t:
 		solution, history = serial_parallel_tempering(graph, distance, initial_paths, initial_temps,
@@ -50,7 +50,7 @@ for iterr in [10**x for x in [3,4,5]]:
 	print "Calculated path: " + str(solution)
 	print "Calculated path length: " + str(distance(graph, solution)) 
 	print "Time: " + str(t.interval) + "\n"
-"""	
+
 # Run parallel parallel tempering
 print "\nParallel Parallel Tempering\n"
 for iterr in [10**x for x in [3,4,5]]:
