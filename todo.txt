@@ -1,0 +1,5 @@
+-save and return all-time best path
+-tune parameters
+-try different swapping strategies
+-update controller to compare parallel code to non-parallel using the same (randomly chosen) starting path
+-try on larger sets
