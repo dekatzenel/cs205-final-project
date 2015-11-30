@@ -1,5 +1,4 @@
 import numpy as np
-import math
 
 def prob(a, b):
     return np.exp(a / b)
@@ -75,8 +74,8 @@ def simulated_annealing(graph, function, initial_X, initial_temp, nbefore, iterr
     return X, history
 
 # Adapted from Lecture14_Parallel_Tempering_and_Emcee.ipynb
-def parallel_tempering(graph, function, initial_Xs, initial_temps, 
-                       iterr, swap_function, nswaps, nbefore):
+def serial_parallel_tempering(graph, function, initial_Xs, initial_temps, 
+                              iterr, swap_function, nswaps, nbefore):
     # Make sure inputs are ok
     assert(len(initial_temps) == len(initial_Xs)), "Mismatched input dimensions"
     assert(initial_temps[0] == 1), "First temperature should be one"
