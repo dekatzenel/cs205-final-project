@@ -17,6 +17,8 @@ print "Best path length: " + str(distance(graph, bestpath)) + "\n"
 
 #Initial values, probably need to be tuned
 initial_path = np.random.permutation(size)
+print "Initial path: " + str(initial_path)
+print "Initial path length: " + str(distance(graph, initial_path)) + "\n"
 initial_temp = 2.
 cool = 0.9
 nbefore = 100
@@ -34,9 +36,11 @@ for iterr in [10**x for x in [3,4,5]]:
 	print "Calculated path length: " + str(distance(graph, solution))
 	print "Time: " + str(t.interval) + "\n"
 
-# Initial values for parallel tempering
+# Reuse copy of initial path for all trials
 nsystems = 3
-initial_paths = [np.random.permutation(size) for i in xrange(nsystems)]
+initial_paths = []
+for i in xrange(nsystems):
+    initial_paths.append(np.asarray(initial_path))
 initial_temps = [1., 5., 10.]
 
 # Run serial parallel tempering

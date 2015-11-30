@@ -52,16 +52,22 @@ def anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps):
     
     # Flip a coin
     if np.random.uniform() < prob(-delta_E, T):
-        history.append(new_E)
         # Copy X_star to X
         X = X_star.copy()
         prev_E = new_E
+
+    # Maintain history
+    history.append(prev_E)
+
     return X, prev_E, delta_E, history
 
 def simulated_annealing(graph, function, initial_X, initial_temp, nbefore, iterr, 
                         swap_function, nswaps):
     X = initial_X.copy()
     T = initial_temp
+    # Dummy value
+    best_path = []
+    best_path_length = float('inf')
     
     history = list()
     # Evaluate E
@@ -71,7 +77,13 @@ def simulated_annealing(graph, function, initial_X, initial_temp, nbefore, iterr
     for i in xrange(iterr):
         X, prev_E, delta_E, history = anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps)            
 
-    return X, history
+        # Store best path
+        newest_distance = distance(graph, X)
+        if newest_distance < best_path_length:
+            best_path = X
+            best_path_length = newest_distance
+
+    return best_path, history
 
 # Adapted from Lecture14_Parallel_Tempering_and_Emcee.ipynb
 def serial_parallel_tempering(graph, function, initial_Xs, initial_temps, 
@@ -87,6 +99,8 @@ def serial_parallel_tempering(graph, function, initial_Xs, initial_temps,
     prev_Es = [function(graph, Xs[i]) for i in range(nsystems)]
     delta_Es = [0] * nsystems
     history = [[] for i in xrange(nsystems)]
+    best_path = []
+    best_path_length = float('inf')
 
     for i in xrange(nsystems):
         history[i].append(prev_Es[i])
@@ -97,16 +111,21 @@ def serial_parallel_tempering(graph, function, initial_Xs, initial_temps,
             Xs[i], prev_Es[i], delta_Es[i], history[i] = anneal_once(graph, function, Xs[i], Ts[i], 
                                                         prev_Es[i], history[i], 
                                                         swap_function, nswaps)
+            # Store best path
+            newest_distance = distance(graph, Xs[i])
+            if newest_distance < best_path_length:
+                best_path = Xs[i]
+                best_path_length = newest_distance
 
         # Decide which chains, if any, to exchange
         if step % nbefore == 0:
-            for i in range(nsystems - 1):
+            for i in range(nsystems - 1, 0, -1):
                 # Acceptance probability
-                A = np.exp(min(np.log(1), ((delta_Es[i] - delta_Es[i+1])/Ts[i]) +
-                                  ((delta_Es[i+1] - delta_Es[i])/Ts[i+1])))
+                A = np.exp(min(np.log(1), ((delta_Es[i] - delta_Es[i-1])/Ts[i]) +
+                                  ((delta_Es[i-1] - delta_Es[i])/Ts[i-1])))
                 if np.random.uniform() < A:
                     # Exchange most recent updates and paths
-                    prev_Es[i], prev_Es[i+1] = prev_Es[i+1], prev_Es[i]
-                    Xs[i], Xs[i+1] = Xs[i+1], Xs[i]
+                    prev_Es[i], prev_Es[i-1] = prev_Es[i-1], prev_Es[i]
+                    Xs[i], Xs[i-1] = Xs[i-1], Xs[i]
 
-    return Xs[0], history[0]
+    return best_path, history
