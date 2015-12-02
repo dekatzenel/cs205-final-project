@@ -43,7 +43,9 @@ def changepath(inputcities, n_swaps):
         cities = swappedCities.copy()
     return cities
 
-def anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps):
+def anneal_once(graph, function, X, T, prev_E, history, history_temp, swap_function, nswaps, accepted):
+    ##### I added an 'accepted' variable that keeps track of how many paths have been accepted.
+
     # Randomly update path
     X_star = swap_function(X, nswaps)
     # Evaluate E
@@ -54,28 +56,35 @@ def anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps):
     if np.random.uniform() < prob(-delta_E, T):
         # Copy X_star to X
         X = X_star.copy()
+        ##### Increment 'accepted'
+        accepted += 1
         prev_E = new_E
 
     # Maintain history
     history.append(prev_E)
+    ##### Keeping a history of the temperatures to observe cooling and reannealing
+    history_temp.append(T)  
 
-    return X, prev_E, delta_E, history
+    return X, prev_E, delta_E, history, history_temp
 
 def simulated_annealing(graph, function, initial_X, initial_temp, nbefore, iterr, 
-                        swap_function, nswaps):
+                        swap_function, nswaps, reheat, cool):
     X = initial_X.copy()
     T = initial_temp
+    accepted = 0
     # Dummy value
     best_path = []
     best_path_length = float('inf')
     
     history = list()
+    history_temp = list()
+    history_temp.append(initial_temp)
     # Evaluate E
     prev_E = function(graph, X)
     history.append(prev_E)
     
     for i in xrange(iterr):
-        X, prev_E, delta_E, history = anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps)            
+        X, prev_E, delta_E, history, history_temp = anneal_once(graph, function, X, T, prev_E, history, history_temp, swap_function, nswaps, accepted)            
 
         # Store best path
         newest_distance = distance(graph, X)
@@ -83,7 +92,13 @@ def simulated_annealing(graph, function, initial_X, initial_temp, nbefore, iterr
             best_path = X
             best_path_length = newest_distance
 
-    return best_path, history
+        ##### Putting reannealing back in
+        if accepted % nbefore == 0: ##### At the reannealing interval:
+            T *= cool               ##### Cool the function down to zero in on a minimum
+        if T < reheat: #### Re-heat to get out of the local minimum
+            T = initial_temp
+
+    return best_path, history, history_temp
 
 # Adapted from Lecture14_Parallel_Tempering_and_Emcee.ipynb
 def serial_parallel_tempering(graph, function, initial_Xs, initial_temps, 
