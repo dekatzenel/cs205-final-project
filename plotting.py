@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from xml_parse import parse_xml_graph
 import networkx as nx
 
-def plot_graph(graph=None, path=None, save=False, name=None):
+def plot_graph(graph=None, path=None, save=False, name=None, label=None):
 	"""
 	Plot a TSP graph.
 
@@ -28,11 +28,13 @@ def plot_graph(graph=None, path=None, save=False, name=None):
 
 	# Plot path, if applicable
 	if path is not None:
-		edges = [(path[i], path[i+1]) for i in len(path)-1]
+		edges = [(path[i], path[i+1]) for i in range(len(path)-1)]
 		edges.append((path[-1], path[0]))
 	else:
 		edges = G.edges()
 
+	plt.clf()
+	plt.title(label)
 	nx.draw_graphviz(G, edgelist=edges, with_labels=None)
 
 	if not save:

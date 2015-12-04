@@ -57,7 +57,7 @@ def anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps):
         prev_E = new_E
 
     # Maintain history
-    history.append(prev_E)
+    history.append((prev_E, X_star))
 
     return X, prev_E, delta_E, history
 
@@ -72,7 +72,7 @@ def simulated_annealing(graph, function, initial_X, initial_temp, nbefore, iterr
     history = list()
     # Evaluate E
     prev_E = function(graph, X)
-    history.append(prev_E)
+    history.append((prev_E, X))
     
     for i in xrange(iterr):
         X, prev_E, delta_E, history = anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps)            
@@ -103,7 +103,7 @@ def serial_parallel_tempering(graph, function, initial_Xs, initial_temps,
     best_path_length = float('inf')
 
     for i in xrange(nsystems):
-        history[i].append(prev_Es[i])
+        history[i].append((prev_Es[i], initial_Xs[i]))
 
     for step in range(iterr):
         for i in range(nsystems):

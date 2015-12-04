@@ -78,7 +78,7 @@ def parallel_parallel_tempering(graph, function, initial_Xs, initial_temps,
 
     for i in xrange(nsystems - 1, -1, -1):
         swap_pipes = []
-        history[i].append(prev_Es[i])
+        history[i].append((prev_Es[i], Xs[i]))
         send_ret_val, recv_ret_val = Pipe()
         send_ret_vals.append(send_ret_val)
         recv_ret_vals.append(recv_ret_val)
