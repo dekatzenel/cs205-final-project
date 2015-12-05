@@ -1,0 +1,14 @@
+Parallel Tempering & TSP:
+Parallel tempering is a simulation method that has its origins in statistical physics, but is also useful in solving optimization problems. One such problem is the Traveling Salesman problem, or TSP, which is NP-hard. The version of TSP we consider asks for the shortest path in a complete undirected weighted graph that visits every node exactly once and returns to the starting node. We used parallel tempering, implemented in parallel using Python multiprocessing, to generate approximate solutions to TSP in reasonable time.
+
+Parallel Tempering:
+Parallel tempering simulates several systems which explore the TSP graph and exchange information. Each system has a different temperature. Systems with higher temperatures explore a wide variety of paths, while systems with lower temperatures are more conservative. Exchanging information between systems combines the dynamic properties of high-temperature systems with the reliability of low-temperature systems and prevents getting caught in local minima.
+
+Slide with Gif:
+On the left is a 26-node TSP graph with more than 10^24 possible TSP paths. The empirical best path is in blue, and the current path is in red. On the right is the current best path, as well as the empirical best path. The current path moves around erratically and often increases in distance, but the best found path steadily improves. This run found a path within two percent of the best path, and finished in under five minutes.
+
+Performance Comparison:
+Something along the lines of:
+[Summary of Christian’s results].
+
+[If necessary/time permitting, also mention speedup:] Parallelizing parallel tempering produced speedup of about [probably] 2.5x and consistently produced paths close to the optimal path. On a larger graph of 280 nodes, with more than 10^564 possible paths, the parallelized algorithm a result within [small number]% of the optimal path in [not so many] minutes.

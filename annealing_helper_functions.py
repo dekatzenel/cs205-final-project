@@ -94,7 +94,7 @@ def serial_parallel_tempering(graph, function, initial_Xs, initial_temps,
 
     # Initialize stuff
     nsystems = len(initial_temps)
-    Xs = initial_Xs
+    Xs = list(initial_Xs)
     Ts = initial_temps
     prev_Es = [function(graph, Xs[i]) for i in range(nsystems)]
     delta_Es = [0] * nsystems
