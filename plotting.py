@@ -61,3 +61,24 @@ def plot_graph(graph=None, path=None, dist=None, best=None, best_dist=None,
 		plt.show()
 	else:
 		plt.savefig('temp/{}.png'.format(name))
+	fig.clf()
+
+def get_plots(history, graph, best, best_dist):
+	""" Generates and saves plots. See plot_graph for parameter descriptions. """
+	dist_hist = list()
+	mindist = np.inf
+	plot_every = 10000 # generate an image every plot_every iterations
+	for i in history[0]:
+		if i[0] < mindist:
+			mindist = i[0]
+		dist_hist.append(mindist)
+
+	actual_hist = [i[0] for i in history[0][::plot_every]]
+	paths_hist = [i[1] for i in history[0][::plot_every]]
+
+	for i in range(len(paths_hist)):
+		title = 'iter={}  dist={}  best={}'.format(i*plot_every, actual_hist[i], 
+			    								   best_dist)
+		plot_graph(graph=graph, path=paths_hist[i], dist=dist_hist[:plot_every*i+1], best=best,
+			       best_dist=best_dist, save=True,
+			       name='abcba{}'.format(i), title=title)
