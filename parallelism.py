@@ -10,8 +10,8 @@ def parallel_tempering(graph, function, X, T, iterr, prev_E, history, swap_funct
 
     for step in range(iterr):
         # Run nbefore steps of simulated annealing
-        X, prev_E, delta_E, history = anneal_once(graph, function, X, T, prev_E, history, 
-                                                   swap_function, nswaps)
+        X, prev_E, delta_E, history, accepted = anneal_once(graph, function, X, T, prev_E, history, 
+                                                   swap_function, nswaps, 0)
         newest_distance = distance(graph, X)
         if newest_distance < best_path_length:
             best_path = X
@@ -62,7 +62,7 @@ def parallel_parallel_tempering(graph, function, initial_Xs, initial_temps,
 
     # Initialize stuff
     nsystems = len(initial_temps)
-    Xs = initial_Xs
+    Xs = list(initial_Xs)
     Ts = initial_temps
     prev_Es = [function(graph, Xs[i]) for i in range(nsystems)]
     delta_Es = [0] * nsystems
@@ -78,7 +78,7 @@ def parallel_parallel_tempering(graph, function, initial_Xs, initial_temps,
 
     for i in xrange(nsystems - 1, -1, -1):
         swap_pipes = []
-        history[i].append(prev_Es[i])
+        history[i].append((prev_Es[i], Xs[i]))
         send_ret_val, recv_ret_val = Pipe()
         send_ret_vals.append(send_ret_val)
         recv_ret_vals.append(recv_ret_val)
