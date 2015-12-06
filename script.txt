@@ -5,10 +5,10 @@ Parallel Tempering:
 Parallel tempering simulates several systems which explore the TSP graph and exchange information. Each system has a different temperature. Systems with higher temperatures explore a wide variety of paths, while systems with lower temperatures are more conservative. Exchanging information between systems combines the dynamic properties of high-temperature systems with the reliability of low-temperature systems and prevents getting caught in local minima.
 
 Slide with Gif:
-On the left is a 26-node TSP graph with more than 10^24 possible TSP paths. The empirical best path is in blue, and the current path is in red. On the right is the current best path, as well as the empirical best path. The current path moves around erratically and often increases in distance, but the best found path steadily improves. This run found a path within two percent of the best path, and finished in under five minutes.
+On the left is a 26-node TSP graph with more than 10^24 possible TSP paths. An empirical best path is in blue, and the current path is in red. On the right is the current best distance, as well as the empirical best distance. The current path moves around erratically and often increases in distance, but the best found path steadily improves. This run found a shortest path, and finished in about five minutes.
 
 Performance Comparison:
-Something along the lines of:
-[Summary of Christian’s results].
+Given a fixed number of iterations, parallel tempering produces a better result than simulated annealing, a similar algorithm with only one system running at a time. Furthermore, our parallel parallel tempering implementation running four threads shows speed improvements of 40-50% over serial.
 
-[If necessary/time permitting, also mention speedup:] Parallelizing parallel tempering produced speedup of about [probably] 2.5x and consistently produced paths close to the optimal path. On a larger graph of 280 nodes, with more than 10^564 possible paths, the parallelized algorithm a result within [small number]% of the optimal path in [not so many] minutes.
+[Show gif of best found path getting better, like the right half of the earlier gif]
+Parallel tempering is also effective on larger graphs. On a graph of 280 nodes, with more than 10^564 possible paths, the parallelized algorithm gives a result within [hopefully small number]% of the optimal path in [hopefully not so many] minutes.
