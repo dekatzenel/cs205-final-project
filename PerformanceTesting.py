@@ -45,7 +45,7 @@ if __name__ == '__main__':
 	reheat = initial_temps[0]                     # Reheats when it is as cold as the coldest PT process
 
 	# Number of runs per method:
-	runs = 30
+	runs = 2
 
 	with Timer() as t:
 
@@ -54,36 +54,32 @@ if __name__ == '__main__':
 		hist_best_ppt = []
 		hist_best_spt = []
 		hist_best_sa  = []
-		for i in xrange(runs):
-			initial_Xs = [np.random.permutation(size) for i in range(num_processes)]
+		for i in range(runs):
+			initial_Xs = [np.random.permutation(size) for a in range(num_processes)]
 
 			solution_ppt, histories_ppt = parallel_parallel_tempering(graph, distance, initial_Xs, initial_temps, iterr, changepath, nswaps, nbefore)
 			hist_best_ppt.append(hist_best(histories_ppt[0]))
+			print 'ppt, ', i
 
 			solution_spt, histories_spt = serial_parallel_tempering(graph, distance, initial_Xs, initial_temps, iterr, changepath, nswaps, nbefore)
 			hist_best_spt.append(hist_best(histories_spt[0]))
+			print 'spt, ', i
 
 			solution_sa, history_sa = simulated_annealing(graph, distance, initial_Xs[0], initial_temps[0], nbefore, iterr, changepath, nswaps, reheat, cool)
 			hist_best_sa.append(hist_best(history_sa))
+			print 'sa , ', i
 
 		hist_best_ppt = np.mean(hist_best_ppt, 0)
+		np.save('hist_best_ppt_2_1.npy', hist_best_ppt)
+		print 'saved ppt'
+
 		hist_best_spt = np.mean(hist_best_spt, 0)
+		np.save('hist_best_spt_2_1.npy', hist_best_spt)
+		print 'saved spt'
+		
 		hist_best_sa  = np.mean(hist_best_sa, 0)
-		np.savetxt('hist_best_ppt.csv', hist_best_ppt, delimiter = ',')
-		np.savetxt('hist_best_spt.csv', hist_best_spt, delimiter = ',')
-		np.savetxt('hist_best_sa.csv' , hist_best_sa,  delimiter = ',')
+		np.save('hist_best_sa_2_1.npy' , hist_best_sa)
+		print 'saved sa '
 
 	print "Time: " + str(t.interval) + "\n"
 
-	# plt.plot(hist_best_ppt, color='b', label = "Parallel Parallel")
-	# plt.plot(hist_best_spt, color='g', label = "Serial Parallel")
-	# plt.plot(hist_best_sa,  color='r', label = "Simulated Annealing")
-	# plt.ylim([optimum - 50 ,hist_best_ppt[1]])
-	# #plt.xscale('log')
-	# plt.yscale('log')
-	# plt.axhline(optimum, color = 'm', label = "True Optimum")
-	# plt.legend(loc = 'best')
-	# plt.title('Convergence Comparison (Average of 30 runs)')
-	# plt.ylabel('Distance (log scale)')
-	# plt.xlabel('Iterations')
-	# plt.show()
