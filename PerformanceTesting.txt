@@ -10,11 +10,11 @@ For the purposes of picking a number of processes to test parameter selection wi
 8 processes: 6.8 sec
 
 
+4 processes was the most efficient on my computer, so I did my tests with 4 processes.  
+
 Parallel Parallel Tempering Parameter selection:
 
 My 'back of the envelope' calculation for optimizing the parameters for parallel parallel tempering:
-
-4 processes was the most efficient on my computer, so I did my tests with 4 processes.  
 
 I chose to do 30 runs per parameter combination to find an average performance for each combination.  This run was performed with every process and every run having the exact same starting path, which was probably not ideal, in retrospect.  
 
@@ -40,4 +40,5 @@ Because this interval was the greatest value that I considered, I ran one more t
 Best swapping interval is  480
 Time: 340.917999983
 
-With some more time to dial in the best parameters, I would have done a more exhaustive search, but I deemed this exploration to be representative of the process, which could easily be extended.  
+With some more time to dial in the best parameters, I would have done a more exhaustive search, but I deemed this exploration to be representative of the process, which could easily be extended.  I used these parameters (temp_ratio = sqrt(5.0), nswaps = 1, nbefore = 480) for the performance tests.  
+

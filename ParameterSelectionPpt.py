@@ -5,6 +5,7 @@ from timer import Timer
 from xml_parse import parse_xml_graph
 from multiprocessing import freeze_support
 
+
 if __name__ == '__main__':
 	# Necessary to make multiprocessing work on Windows:
 	freeze_support()

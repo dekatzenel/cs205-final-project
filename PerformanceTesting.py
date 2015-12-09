@@ -45,7 +45,7 @@ if __name__ == '__main__':
 	reheat = initial_temps[0]                     # Reheats when it is as cold as the coldest PT process
 
 	# Number of runs per method:
-	runs = 2
+	runs = 5
 
 	with Timer() as t:
 
@@ -70,15 +70,15 @@ if __name__ == '__main__':
 			print 'sa , ', i
 
 		hist_best_ppt = np.mean(hist_best_ppt, 0)
-		np.save('hist_best_ppt_2_1.npy', hist_best_ppt)
+		np.save('hist_best_ppt_5_3.npy', hist_best_ppt)
 		print 'saved ppt'
 
 		hist_best_spt = np.mean(hist_best_spt, 0)
-		np.save('hist_best_spt_2_1.npy', hist_best_spt)
+		np.save('hist_best_spt_5_3.npy', hist_best_spt)
 		print 'saved spt'
 		
 		hist_best_sa  = np.mean(hist_best_sa, 0)
-		np.save('hist_best_sa_2_1.npy' , hist_best_sa)
+		np.save('hist_best_sa_5_3.npy' , hist_best_sa)
 		print 'saved sa '
 
 	print "Time: " + str(t.interval) + "\n"
