@@ -1,58 +1,115 @@
 import numpy as np
 
+
+"""
+Calculates the exponential of the quotient of two numbers
+Used in anneal_once()
+Arguments: 
+    a - dividend
+    b - divisor
+Returns:
+    e^(a/b)
+"""
 def prob(a, b):
     return np.exp(a / b)
 
-# Functions below adapted from ac290_tutorial2_simulated_annealing-student.ipynb
 
-#Assumes citypath is a list/1D array of city numeric indices
+###############################################################################
+# Functions below adapted from:
+# ac290_tutorial2_simulated_annealing-student.ipynb
+###############################################################################
+
+"""
+Calculates the total distance to traverse a sequence of cities
+Comparison metric used for routes in the Traveling Salesman Problem
+Arguments:
+    graph - a 2D numpy array where graph[A,B] is the distance from city A to
+            city B
+    citypath - a list/1D array of city numeric indices that correspond to the
+               indices of the graph
+Returns:
+    Sum of the distances between cities along the path
+"""
 def distance(graph, citypath):
     distance = 0
     number_of_cities = len(citypath)
     
     # loop over all cities
     for j in xrange(number_of_cities):
-        if j == (number_of_cities - 1): # FINAL POINT CONNECTS WITH THE FIRST ONE
+        if j == (number_of_cities - 1): # FINAL POINT CONNECTS WITH FIRST ONE
             distance += graph[citypath[j], citypath[0]]
         else:
             distance += graph[citypath[j], citypath[j+1]]
     return distance
 
-#Helper function for changepath
+
+"""
+Randomly selects 2 indices in a 1D array and swaps their contents
+Used in changepath()
+Arguments:
+    cities - ordered 1D array of city index numbers
+Returns:
+    reordered path
+"""
 def swapindex(cities):
     indices = range(len(cities))
     # take two random indices to swap
     c1,c2 = np.random.choice(indices, 2, replace=False)
     
-    # remember the cities to swap
-    tmp1 = cities[c1]
-    tmp2 = cities[c2]
-    
-    # do the actual swapping
+    # do the actual swapping on a new copy of the cities
     changedCities = cities.copy()
-    changedCities[c1] = tmp2
-    changedCities[c2] = tmp1    
+    changedCities[c1] = cities[c2]
+    changedCities[c2] = cities[c1]    
     return changedCities
 
-#Clever updating function for simulated annealing
-def changepath(inputcities, n_swaps):
+
+"""
+Performs swaps as part of update step for both simulated annealing and parallel
+    tempering
+Used in anneal_once() as swap_function
+Arguments:
+    inputcities - ordered 1D array of city index numbers
+    nswaps - number of sequential swaps to perform per update
+Returns:
+    reordered path after all swaps
+"""
+def changepath(inputcities, nswaps):
     cities = inputcities.copy()
     # Make n_swaps number of swaps
-    for i in range(n_swaps):
+    for i in range(nswaps):
         swappedCities = swapindex(cities)
         cities = swappedCities.copy()
     return cities
 
+
+"""
+Performs one base step of simulated annealing/parallel tempering
+Used in simulated_annealing(), serial_parallel_tempering(), and
+    parallel_parallel_tempering()
+Arguments:
+    graph - a 2D numpy array where graph[A,B] is the distance from city A to
+            city B
+    function - a function that takes in values for graph and X_star and returns
+               an energy (E) value. ex: distance()
+    X - current ordered path
+    T - current system temperature, affects probability of update
+    prev_E - energy of the prior value of X
+    history - record of all steps taken thus far in calling function
+    swap_function - a function that takes in values for X and nswaps and
+                    returns a new ordering of X. ex: changepath()
+    nswaps - number of swaps to perform when calculating updated path
+Returns:
+    post-processing values of X, E, delta_E, and history
+"""
 def anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps):
-    # Randomly update path
+    # Randomly calculate updated path
     X_star = swap_function(X, nswaps)
-    # Evaluate E
+    # Evaluate E for calculated updated path
     new_E = function(graph, X_star)
     delta_E = new_E - prev_E
     
-    # Flip a coin
+    # Flip a coin to determine if E and X should update to calculated values
     if np.random.uniform() < prob(-delta_E, T):
-        # Copy X_star to X
         X = X_star.copy()
         prev_E = new_E
 
@@ -61,13 +118,33 @@ def anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps):
 
     return X, prev_E, delta_E, history
 
-def simulated_annealing(graph, function, initial_X, initial_temp, nbefore, iterr, 
-                        swap_function, nswaps):
+
+"""
+Runs simulated annealing for given inputs
+Called directly by controller/comparison files
+Arguments:
+    graph - a 2D numpy array where graph[A,B] is the distance from city A to
+            city B
+    function - a function that takes in values for graph and X_star and returns
+               an energy (E) value. ex: distance()
+    initial_X - initial ordered path
+    initial_temp - initial system temperature, affects probability of update
+    nbefore - !!!!!NOT CURRENTLY USED!!!!!
+    iterr - number of iterations to perform of simulated annealing algorithm
+    swap_function - a function that takes in values for X and nswaps and
+                    returns a new ordering of X. ex: changepath()
+    nswaps - number of swaps to perform when calculating updated path
+Returns:
+    -value of X with minimum associated value of E
+    -history of E and X values
+"""
+def simulated_annealing(graph, function, initial_X, initial_temp, nbefore,
+                        iterr,  swap_function, nswaps):
     X = initial_X.copy()
     T = initial_temp
     # Dummy value
     best_path = []
-    best_path_length = float('inf')
+    best_path_value = float('inf')
     
     history = list()
     # Evaluate E
@@ -75,57 +152,13 @@ def simulated_annealing(graph, function, initial_X, initial_temp, nbefore, iterr
     history.append((prev_E, X))
     
     for i in xrange(iterr):
-        X, prev_E, delta_E, history = anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps)            
+        X, prev_E, delta_E, history = anneal_once(graph, function, X, T,
+                                                  prev_E, history,
+                                                  swap_function, nswaps)            
 
         # Store best path
-        newest_distance = distance(graph, X)
-        if newest_distance < best_path_length:
+        if prev_E < best_path_value:
             best_path = X
-            best_path_length = newest_distance
-
-    return best_path, history
-
-# Adapted from Lecture14_Parallel_Tempering_and_Emcee.ipynb
-def serial_parallel_tempering(graph, function, initial_Xs, initial_temps, 
-                              iterr, swap_function, nswaps, nbefore):
-    # Make sure inputs are ok
-    assert(len(initial_temps) == len(initial_Xs)), "Mismatched input dimensions"
-    assert(initial_temps[0] == 1), "First temperature should be one"
-
-    # Initialize stuff
-    nsystems = len(initial_temps)
-    Xs = list(initial_Xs)
-    Ts = initial_temps
-    prev_Es = [function(graph, Xs[i]) for i in range(nsystems)]
-    delta_Es = [0] * nsystems
-    history = [[] for i in xrange(nsystems)]
-    best_path = []
-    best_path_length = float('inf')
-
-    for i in xrange(nsystems):
-        history[i].append((prev_Es[i], initial_Xs[i]))
-
-    for step in range(iterr):
-        for i in range(nsystems):
-            # Run nbefore steps of simulated annealing
-            Xs[i], prev_Es[i], delta_Es[i], history[i] = anneal_once(graph, function, Xs[i], Ts[i], 
-                                                        prev_Es[i], history[i], 
-                                                        swap_function, nswaps)
-            # Store best path
-            newest_distance = distance(graph, Xs[i])
-            if newest_distance < best_path_length:
-                best_path = Xs[i]
-                best_path_length = newest_distance
-
-        # Decide which chains, if any, to exchange
-        if step % nbefore == 0:
-            for i in range(nsystems - 1, 0, -1):
-                # Acceptance probability
-                A = np.exp(min(np.log(1), ((delta_Es[i] - delta_Es[i-1])/Ts[i]) +
-                                  ((delta_Es[i-1] - delta_Es[i])/Ts[i-1])))
-                if np.random.uniform() < A:
-                    # Exchange most recent updates and paths
-                    prev_Es[i], prev_Es[i-1] = prev_Es[i-1], prev_Es[i]
-                    Xs[i], Xs[i-1] = Xs[i-1], Xs[i]
+            best_path_value = prev_E
 
     return best_path, history

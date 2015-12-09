@@ -1,21 +1,68 @@
 import numpy as np
 
 from multiprocessing import Process, Queue, Pipe
-from annealing_helper_functions import distance, anneal_once
+from annealing_helper_functions import anneal_once
+
+###############################################################################
+# Functions below adapted from Lecture14_Parallel_Tempering_and_Emcee.ipynb
+###############################################################################
+
+def serial_parallel_tempering(graph, function, initial_Xs, initial_temps, 
+                              iterr, swap_function, nswaps, nbefore):
+    # Make sure inputs are ok
+    assert(len(initial_temps) == len(initial_Xs)), "Mismatched input dimensions"
+    assert(initial_temps[0] == 1), "First temperature should be one"
+
+    # Initialize stuff
+    nsystems = len(initial_temps)
+    Xs = list(initial_Xs)
+    Ts = initial_temps
+    prev_Es = [function(graph, Xs[i]) for i in range(nsystems)]
+    delta_Es = [0] * nsystems
+    history = [[] for i in xrange(nsystems)]
+    best_path = []
+    best_path_value = float('inf')
+
+    for i in xrange(nsystems):
+        history[i].append((prev_Es[i], initial_Xs[i]))
+
+    for step in range(iterr):
+        for i in range(nsystems):
+            # Run nbefore steps of simulated annealing
+            Xs[i], prev_Es[i], delta_Es[i], history[i] = anneal_once(graph, function, Xs[i], Ts[i], 
+                                                        prev_Es[i], history[i], 
+                                                        swap_function, nswaps)
+            # Store best path
+            if prev_Es[i] < best_path_value:
+                best_path = Xs[i]
+                best_path_value = prev_Es[i]
+
+        # Decide which chains, if any, to exchange
+        if step % nbefore == 0:
+            for i in range(nsystems - 1, 0, -1):
+                # Acceptance probability
+                A = np.exp(min(np.log(1), ((delta_Es[i] - delta_Es[i-1])/Ts[i]) +
+                                  ((delta_Es[i-1] - delta_Es[i])/Ts[i-1])))
+                if np.random.uniform() < A:
+                    # Exchange most recent updates and paths
+                    prev_Es[i], prev_Es[i-1] = prev_Es[i-1], prev_Es[i]
+                    Xs[i], Xs[i-1] = Xs[i-1], Xs[i]
+
+    return best_path, history
+
 
 def parallel_tempering(graph, function, X, T, iterr, prev_E, history, swap_function, nswaps, 
                        nbefore, process_number, process_count, queues_A, pipes_swap, send_ret_val):
     best_path = []
-    best_path_length = float('inf')
+    best_path_value = float('inf')
 
     for step in range(iterr):
         # Run nbefore steps of simulated annealing
         X, prev_E, delta_E, history = anneal_once(graph, function, X, T, prev_E, history, 
                                                    swap_function, nswaps)
-        newest_distance = distance(graph, X)
-        if newest_distance < best_path_length:
+        if prev_E < best_path_value:
             best_path = X
-            best_path_length = newest_distance
+            best_path_value = prev_E
 
         # Decide which chains, if any, to exchange
         if step % nbefore == 0:
@@ -65,7 +112,6 @@ def parallel_parallel_tempering(graph, function, initial_Xs, initial_temps,
     Xs = list(initial_Xs)
     Ts = initial_temps
     prev_Es = [function(graph, Xs[i]) for i in range(nsystems)]
-    delta_Es = [0] * nsystems
     history = [[] for i in xrange(nsystems)]
     processes = []
     queues_A = []
@@ -114,6 +160,6 @@ def parallel_parallel_tempering(graph, function, initial_Xs, initial_temps,
         p.join()
 
     #Return final X and history from thread where T = 1
-    distances = [distance(graph, path) for path in best_paths]
+    distances = [function(graph, path) for path in best_paths]
     index_of_shortest_path = min(xrange(len(distances)),key=distances.__getitem__)
     return best_paths[index_of_shortest_path], final_histories

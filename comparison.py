@@ -1,7 +1,7 @@
 import numpy as np
 
-from annealing_helper_functions import distance, changepath, simulated_annealing, serial_parallel_tempering
-from parallelism import parallel_parallel_tempering
+from annealing_helper_functions import distance, changepath, simulated_annealing
+from parallel_tempering import serial_parallel_tempering, parallel_parallel_tempering
 from timer import Timer
 from xml_parse import parse_xml_graph
 from plotting import get_plots
