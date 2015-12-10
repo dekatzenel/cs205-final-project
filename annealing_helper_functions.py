@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 
 """
@@ -101,7 +102,9 @@ Arguments:
 Returns:
     post-processing values of X, E, delta_E, and history
 """
-def anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps):
+def anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps,
+                accepted=0):
+
     # Randomly calculate updated path
     X_star = swap_function(X, nswaps)
     # Evaluate E for calculated updated path
@@ -111,12 +114,15 @@ def anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps):
     # Flip a coin to determine if E and X should update to calculated values
     if np.random.uniform() < prob(-delta_E, T):
         X = X_star.copy()
+        ##### Increment 'accepted'
+        accepted += 1
         prev_E = new_E
 
-    # Maintain history
-    history.append((prev_E, X_star))
+    # Maintain history - distance, path, temp, time
+    current_time = time.time()
+    history.append([prev_E, X_star, T, current_time])  
 
-    return X, prev_E, delta_E, history
+    return X, prev_E, delta_E, history, accepted
 
 
 """
@@ -139,27 +145,42 @@ Returns:
     -value of X with minimum associated value of E
     -history of E and X values
 """
-def simulated_annealing(graph, function, initial_X, initial_temp, nbefore,
-                        cool, iterr,  swap_function, nswaps):
+def simulated_annealing(graph, function, initial_X, initial_temp, nbefore, iterr, 
+                        swap_function, nswaps, reheat, cool):
     X = initial_X.copy()
     T = initial_temp
+
+    ##### Number of paths that have been accepted
+    accepted = 0
     # Dummy value
     best_path = []
     best_path_value = float('inf')
     
     history = list()
+ 
     # Evaluate E
     prev_E = function(graph, X)
-    history.append((prev_E, X))
+
+    #### Starting time
+    current_time = time.time()
+
+    history.append([prev_E, X, T, current_time])
     
-    for i in xrange(iterr):
-        X, prev_E, delta_E, history = anneal_once(graph, function, X, T,
-                                                  prev_E, history,
-                                                  swap_function, nswaps)            
+    for i in range(iterr):
+        X, prev_E, delta_E, history, accepted = anneal_once(graph, function, X,
+                                                            T, prev_E, history,
+                                                            swap_function,
+                                                            nswaps, accepted)            
 
         # Store best path
         if prev_E < best_path_value:
             best_path = X
             best_path_value = prev_E
+
+        # Reanneal
+        if i % nbefore == 0:        ##### At the reannealing interval:
+            T *= cool               ##### Cool the function down to zero in on a minimum
+            if T < reheat:          ##### Re-heat to get out of the local minimum
+                T = initial_temp
 
     return best_path, history
