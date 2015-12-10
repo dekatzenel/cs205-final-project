@@ -29,7 +29,6 @@ cs205-final-project
 ```   
 
 There are multiple files that can serve as the starting point for the code in this repository. To run the code, enter `python <NAME_OF_FILE>` into the commandline.
-
 + `comparison.py` runs parallel tempering in both serial and parallel for iteration counts of 10^3, 10^4, 10^5, and 10^6 on
  http://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/XML-TSPLIB/instances/fri26.xml.zip (also stored in resources). Each iteration count is run 10 times. Both types of parallel
  tempering run with 4 systems and for the parallel version, these systems are each in a separate process. `comparison.py` prints the known optimum path and its length
@@ -40,6 +39,5 @@ There are multiple files that can serve as the starting point for the code in th
  found and its length for each iteration count of each algorithm.
 
 There are two files that contain data that can be converted into graphs to be used in TSP. Both are located in `resources/`. 
-
 + `fri26.xml.zip` is our primary file on which we performed most of our testing. It has 26 nodes.
 + `a280.xml.zip` is a larger file with 280 nodes. We used it to check how our results scaled to larger data sets.
