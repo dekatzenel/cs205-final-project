@@ -1,9 +1,31 @@
+import zipfile
+
 import xml.etree.ElementTree as ET
 import numpy as np
 
-def parse_xml_graph(filename='fri26.xml'):
+"""
+Converts a zipped or unzipped xml file to the graph structure used by the rest
+    of the code
+Called directly by controller/comparison files
+Arguments:
+    filename - the name of the unzipped xml file that you wish to use,
+               regardless of whether it currently is zipped or unzipped
+               ex: fri26.xml
+Returns:
+    edge-matrix graph structure stored as a numpy 2D array
+"""
+def parse_xml_graph(filename):
+
+    #Unzip file if not yet unzipped
+    try: 
+        tree = ET.parse(filename)
+    except IOError:
+        zipped_filename = filename + '.zip'    
+        zf = zipfile.ZipFile(zipped_filename, 'r')
+        zf.extractall()
+        tree = ET.parse(filename)
+    
     #Parse XML file to graph
-    tree = ET.parse(filename)
     root = tree.getroot()
     graph_structure = root.find('graph')
 

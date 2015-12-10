@@ -1,5 +1,9 @@
-# a helpful timer class that can be used by the "with" statement
-# taken from https://github.com/harvard-cs205/cs205-homework/blob/master/HW2/util/timer.py
+"""
+A helpful timer class that can be used by the "with" statement
+Taken from:
+https://github.com/harvard-cs205/cs205-homework/blob/master/HW2/util/timer.py
+Called directly by controller/comparison files
+"""
 import time
 class Timer(object):
     def __enter__(self):
