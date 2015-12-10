@@ -10,7 +10,7 @@ from utils.xml_parse import parse_xml_graph
 # get_plots(history, graph=None, best=bestpath, 
 #           best_dist=distance(graph, bestpath))
 
-graph = parse_xml_graph('fri26.xml')
+graph = parse_xml_graph('resources/fri26.xml')
 
 # Square matrix
 assert graph.shape[0] == graph.shape[1]
