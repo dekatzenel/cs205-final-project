@@ -130,6 +130,7 @@ Arguments:
     initial_X - initial ordered path
     initial_temp - initial system temperature, affects probability of update
     nbefore - !!!!!NOT CURRENTLY USED!!!!!
+    cool - !!!!!NOT CURRENTLY USED!!!!!
     iterr - number of iterations to perform of simulated annealing algorithm
     swap_function - a function that takes in values for X and nswaps and
                     returns a new ordering of X. ex: changepath()
@@ -139,7 +140,7 @@ Returns:
     -history of E and X values
 """
 def simulated_annealing(graph, function, initial_X, initial_temp, nbefore,
-                        iterr,  swap_function, nswaps):
+                        cool, iterr,  swap_function, nswaps):
     X = initial_X.copy()
     T = initial_temp
     # Dummy value
