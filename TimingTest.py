@@ -17,6 +17,9 @@ def hist_best(history):
 	dist_hist=[]
 	time_hist=[]
 
+    # Note: because of the way history is stored, this can not be converted to an array and done with 
+    #    a vector operation.  This is because history is a list of lists that is appended to at each 
+    #    iteration, and the current path is a list within the list of lists.  
 	for i in history:
 		if i[0] < mindist:
 			mindist = i[0] # Update lowest value in history
@@ -100,18 +103,18 @@ if __name__ == '__main__':
 		dist_hist_ppt = np.mean(dist_hist_ppt, 0)
 		time_hist_ppt = np.mean(time_hist_ppt, 0)
 		# Save results to plot in plotter.py
-		np.save('time_hist_ppt.npy', time_hist_ppt)
-		np.save('dist_hist_ppt.npy', dist_hist_ppt)
+		np.save('./SavedResults/time_hist_ppt.npy', time_hist_ppt)
+		np.save('./SavedResults/dist_hist_ppt.npy', dist_hist_ppt)
 
 		dist_hist_spt = np.mean(dist_hist_spt, 0)
 		time_hist_spt = np.mean(time_hist_spt, 0)
-		np.save('time_hist_spt.npy', time_hist_spt)
-		np.save('dist_hist_spt.npy', dist_hist_spt)
+		np.save('./SavedResults/time_hist_spt.npy', time_hist_spt)
+		np.save('./SavedResults/dist_hist_spt.npy', dist_hist_spt)
 		
 		dist_hist_sa  = np.mean(dist_hist_sa, 0)
 		time_hist_sa  = np.mean(time_hist_sa, 0)
-		np.save('time_hist_sa.npy', time_hist_sa)
-		np.save('dist_hist_sa.npy', dist_hist_sa)
+		np.save('./SavedResults/time_hist_sa.npy', time_hist_sa)
+		np.save('./SavedResults/dist_hist_sa.npy', dist_hist_sa)
 		
 	print "Time: " + str(t.interval) + "\n"
 
