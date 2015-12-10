@@ -66,8 +66,8 @@ def serial_parallel_tempering(graph, function, initial_Xs, initial_temps,
             for i in range(nsystems - 1, 0, -1):
                 # Acceptance probability
                 # 0 = ln(1)                
-                A = np.exp(0, ((delta_Es[i] - delta_Es[i-1])/Ts[i]) +
-                              ((delta_Es[i-1] - delta_Es[i])/Ts[i-1]))
+                A = np.exp(min(0, ((delta_Es[i] - delta_Es[i-1])/Ts[i]) +
+                              ((delta_Es[i-1] - delta_Es[i])/Ts[i-1])))
                 if np.random.uniform() < A:
                     # Exchange most recent updates and paths
                     prev_Es[i], prev_Es[i-1] = prev_Es[i-1], prev_Es[i]
