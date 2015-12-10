@@ -4,6 +4,7 @@
 
 ####Directory structure:
 
+```
 cs205-final-project     
 +-- Writeup     
 |   +-- final.gif     
@@ -20,4 +21,5 @@ cs205-final-project
 +-- annealing_helper_functions.py     
 +-- comparison.py     
 +-- controller.py     
-+-- parallel_tempering.py     
++-- parallel_tempering.py
+```   
