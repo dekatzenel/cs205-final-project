@@ -7,16 +7,20 @@ graph = parse_xml_graph('fri26.xml')
 bestpath = np.asarray([x-1 for x in [1, 25, 24, 23, 26, 22, 21, 17, 18, 20, 19, 16, 11, 12, 13, 15, 14, 10, 9, 8, 7, 5, 6, 4, 3, 2]])
 optimum = distance(graph, bestpath)
 
-hist_best_ppt = np.load('hist_best_ppt.npy')
-hist_best_spt = np.load('hist_best_spt.npy')
-hist_best_sa  = np.load('hist_best_sa.npy')
+time_hist_ppt = np.load('time_hist_ppt.npy')
+time_hist_spt = np.load('time_hist_spt.npy')
+time_hist_sa  = np.load('time_hist_sa.npy')
 
-plt.plot(hist_best_ppt[:50000], color='b', label = "Parallel Parallel")
-plt.plot(hist_best_spt[:50000], color='g', label = "Serial Parallel")
-plt.plot(hist_best_sa[:200000][0::4],  color='r', label = "Simulated Annealing")
+dist_hist_ppt = np.load('dist_hist_ppt.npy')
+dist_hist_spt = np.load('dist_hist_spt.npy')
+dist_hist_sa  = np.load('dist_hist_sa.npy')
 
-plt.xlim([0,50000])
-plt.ylim([optimum - 50 ,hist_best_ppt[0]])
+plt.plot(time_hist_ppt, dist_hist_ppt, color='b', label = "Parallel Parallel")
+plt.plot(time_hist_spt, dist_hist_spt, color='g', label = "Serial Parallel")
+plt.plot(time_hist_sa , dist_hist_sa,  color='r', label = "Simulated Annealing")
+
+# plt.xlim([0,np.min(np.max(time_hist_sa), np.max(time_hist_spt), np.max(time_hist_ppt))])
+plt.ylim([optimum - 50 ,dist_hist_ppt[0]])
 # plt.xscale('log')
 
 axis_font = {'fontname':'Arial', 'size':30}
@@ -24,11 +28,30 @@ axis_font = {'fontname':'Arial', 'size':30}
 plt.yscale('log', **axis_font)
 plt.axhline(optimum, color = 'm', label = "True Optimum")
 plt.legend(loc = 'best', prop = {'size': 20})
-plt.title('Convergence Comparison (Average of 25 runs)', **axis_font)
+plt.title('Convergence Comparison (Average of 25 runs of 50,000 iterations)', **axis_font)
 plt.ylabel('Distance (log scale)', **axis_font)
 
-plt.xlabel('Total Number of Computations', **axis_font)
+plt.xlabel('Elapsed Time', **axis_font)
 plt.show()
+
+# plt.plot(hist_best_ppt[:50000], color='b', label = "Parallel Parallel")
+# plt.plot(hist_best_spt[:50000], color='g', label = "Serial Parallel")
+# plt.plot(hist_best_sa[:200000][0::4],  color='r', label = "Simulated Annealing")
+
+# plt.xlim([0,50000])
+# plt.ylim([optimum - 50 ,hist_best_ppt[0]])
+# # plt.xscale('log')
+
+# axis_font = {'fontname':'Arial', 'size':30}
+
+# plt.yscale('log', **axis_font)
+# plt.axhline(optimum, color = 'm', label = "True Optimum")
+# plt.legend(loc = 'best', prop = {'size': 20})
+# plt.title('Convergence Comparison (Average of 25 runs)', **axis_font)
+# plt.ylabel('Distance (log scale)', **axis_font)
+
+# plt.xlabel('Total Number of Computations', **axis_font)
+# plt.show()
 
 
 # np.save('hist_best_ppt.npy', hist_best_ppt)

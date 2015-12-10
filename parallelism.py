@@ -1,5 +1,5 @@
 import numpy as np
-
+import time
 from multiprocessing import Process, Queue, Pipe
 from annealing_helper_functions import distance, anneal_once
 
@@ -75,10 +75,11 @@ def parallel_parallel_tempering(graph, function, initial_Xs, initial_temps,
     recv_ret_vals = []
     best_paths = []
     final_histories = []
+    current_time = time.time()
 
     for i in xrange(nsystems - 1, -1, -1):
         swap_pipes = []
-        history[i].append((prev_Es[i], Xs[i]))
+        history[i].append([prev_Es[i], Xs[i], Ts[i], current_time])
         send_ret_val, recv_ret_val = Pipe()
         send_ret_vals.append(send_ret_val)
         recv_ret_vals.append(recv_ret_val)

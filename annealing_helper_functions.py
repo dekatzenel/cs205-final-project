@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 def prob(a, b):
     return np.exp(a / b)
@@ -62,7 +63,11 @@ def anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps, a
 
     # Maintain history
     ##### Keeping a history of the temperatures to observe cooling and reannealing
-    history.append([prev_E, X_star, T])  
+    ##### Also keeping a history of the current time to calculate elapsed time for each algorithm
+
+
+    current_time = time.time()
+    history.append([prev_E, X_star, T, current_time])  
 
     return X, prev_E, delta_E, history, accepted
 
@@ -81,7 +86,11 @@ def simulated_annealing(graph, function, initial_X, initial_temp, nbefore, iterr
  
     # Evaluate E
     prev_E = function(graph, X)
-    history.append([prev_E, X, T])
+
+    #### Starting time
+    current_time = time.time()
+
+    history.append([prev_E, X, T, current_time])
     
     for i in range(iterr):
         X, prev_E, delta_E, history, accepted = anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps, accepted)            
@@ -117,8 +126,12 @@ def serial_parallel_tempering(graph, function, initial_Xs, initial_temps,
     best_path = []
     best_path_length = float('inf')
 
+    ###### Current time
+    current_time = time.time()
+
+
     for i in xrange(nsystems):
-        history[i].append((prev_Es[i], initial_Xs[i]))
+        history[i].append((prev_Es[i], initial_Xs[i], Ts[i], current_time))
 
     for step in range(iterr):
         for i in range(nsystems):
