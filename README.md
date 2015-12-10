@@ -54,6 +54,9 @@ cs205-final-project
 +-- Report.ipynb
 ```   
 
+`Report.ipynb` is our project website. This notebook gives the background for our project, describes our implementations, interprets our results, and discusses parallelism in
+ the context of this project.  
+
 All code for this project is located inside of the `Code\` folder.
 
 There are multiple files that can serve as the starting point for the code in this repository. To run the code, enter `python <NAME_OF_FILE>` into the commandline.
@@ -75,24 +78,19 @@ Our code for parallel tempering, both in serial and in parallel, is located in `
 
 Several ipython notebooks are referenced as resources throughout the code. They are available at `resources/ipython_source_files.zip`.
 
-`Report.ipynb` 
-This is our project website. This notebook gives the background for our project, describes our implementations, interprets our results, and discusses parallelism in
- the context of this project.  
+`ParameterSelectionPpt.py` performs a gradient descent parameter optimization for parallel parallel tempering. The returned parameters are then used in `TimingTest.py`
 
-`TimingTest.py` 
-Performs many runs of each of the three optimization algorithms, averages their current path and run time at each step among the many iterations, and saves these files
+`TimingTest.py` performs many runs of each of the three optimization algorithms, averages their current path and run time at each step among the many iterations, and saves these files
  so that they can be plotted in `plotter.py`
 
-`plotter.py` 
-Loads saved test results from `TimingTest.py` and plots them. This function was used to generate all of the performance plots for the report.  
-
-`ParameterSelectionPpt.py`
-Performs a gradient descent parameter optimization for parallel parallel tempering. The returned parameters are then used in `TimingTest.py`
+`plotter.py` loads saved test results from `TimingTest.py` and plots them. This function was used to generate all of the performance plots for the report.  
 
 `Images/`
-Contains all of the images that are referenced in the Report. The images are loaded into the report notebook using IPython's display.Image() command.  
+
+Contains all of the images that are referenced in the Report. The images are loaded into the report notebook using IPython's `display.Image()` command.  
 
 `SavedResults/`
+
 Contains the output from several runs of `TimingTest.py`  These results are included so that the user can generate customized plots and perform analyses on the
  algorithms without having to re-run lengthy simulations. The `IndividualRuns/` subfolder contains the results from a single run of each algorithm, in case the user
  wants to observe individual runs rather than averaged results over many runs. The `time_hist__`, `hist_best__`, and `dist_hist__` files are averaged results from 25 runs.
