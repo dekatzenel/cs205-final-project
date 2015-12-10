@@ -4,20 +4,20 @@
 
 ####Directory structure:
 
-cs205-final-project
-+-- Writeup
-|   +-- final.gif
-|   +-- presentation.key
-|   +-- presentation.pdf
-|   +-- results.txt
-|   +-- script.txt
-+-- utils
-|   +-- \__init__.py
-|   +-- plotting.py
-|   +-- timer.py
-|   +-- xml_parse.py
-+-- README.md
-+-- annealing_helper_functions.py
-+-- comparison.py
-+-- controller.py
+cs205-final-project<br/>
++-- Writeup<br/>
+|   +-- final.gif<br/>
+|   +-- presentation.key<br/>
+|   +-- presentation.pdf<br/>
+|   +-- results.txt<br/>
+|   +-- script.txt<br/>
++-- utils<br/>
+|   +-- \__init__.py<br/>
+|   +-- plotting.py<br/>
+|   +-- timer.py<br/>
+|   +-- xml_parse.py<br/>
++-- README.md<br/>
++-- annealing_helper_functions.py<br/>
++-- comparison.py<br/>
++-- controller.py<br/>
 +-- parallel_tempering.py
