@@ -22,7 +22,7 @@ def parse_xml_graph(filename):
     except IOError:
         zipped_filename = filename + '.zip'    
         zf = zipfile.ZipFile(zipped_filename, 'r')
-        zf.extractall('/resources')
+        zf.extractall('resources/')
         tree = ET.parse(filename)
     
     #Parse XML file to graph
