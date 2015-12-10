@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 from multiprocessing import Process, Queue, Pipe
 from annealing_helper_functions import anneal_once
@@ -52,10 +53,9 @@ def serial_parallel_tempering(graph, function, initial_Xs, initial_temps,
     for step in range(iterr):
         for i in range(nsystems):
             # Run nbefore steps of simulated annealing
-            Xs[i], prev_Es[i], delta_Es[i], history[i] = anneal_once(graph,
-                                                        function, Xs[i], Ts[i], 
-                                                        prev_Es[i], history[i], 
-                                                        swap_function, nswaps)
+            Xs[i], prev_Es[i], delta_Es[i], history[i], _ = 
+                    anneal_once(graph, function, Xs[i], Ts[i], prev_Es[i],
+                                history[i], swap_function, nswaps)
             # Store best path
             if prev_Es[i] < best_path_value:
                 best_path = Xs[i]
@@ -111,7 +111,7 @@ def parallel_tempering(graph, function, X, T, iterr, prev_E, history,
 
     for step in range(iterr):
         # Run nbefore steps of simulated annealing
-        X, prev_E, delta_E, history = anneal_once(graph, function, X, T,
+        X, prev_E, delta_E, history, _ = anneal_once(graph, function, X, T,
                                                   prev_E, history,
                                                   swap_function, nswaps)
         if prev_E < best_path_value:
@@ -200,6 +200,8 @@ def parallel_parallel_tempering(graph, function, initial_Xs, initial_temps,
     best_paths = []
     final_histories = []
 
+    current_time = time.time()
+
     # -Initialize history
     # -Assemble communication pipes between current process and to-be-generated
     # processes    
@@ -209,7 +211,7 @@ def parallel_parallel_tempering(graph, function, initial_Xs, initial_temps,
     # final process and first process, respectively)
     for i in xrange(nsystems - 1, -1, -1):
         swap_pipes = []
-        history[i].append((prev_Es[i], Xs[i]))
+        history[i].append([prev_Es[i], Xs[i], Ts[i], current_time])
         send_ret_val, recv_ret_val = Pipe()
         send_ret_vals.append(send_ret_val)
         recv_ret_vals.append(recv_ret_val)

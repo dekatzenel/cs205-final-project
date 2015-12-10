@@ -102,7 +102,8 @@ Arguments:
 Returns:
     post-processing values of X, E, delta_E, and history
 """
-def anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps, accepted):
+def anneal_once(graph, function, X, T, prev_E, history, swap_function, nswaps,
+                accepted=0):
 
     # Randomly calculate updated path
     X_star = swap_function(X, nswaps)
