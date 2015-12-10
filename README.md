@@ -6,12 +6,32 @@
 
 ```
 cs205-final-project     
-+-- Writeup     
-|   +-- final.gif     
-|   +-- presentation.key     
-|   +-- presentation.pdf     
-|   +-- results.txt     
-|   +-- script.txt     
++-- Images	
+|   +-- AccuracyVsComputation.png	
+|   +-- AccuracyVsIterations.png	
+|   +-- AccuracyVsTime0to4sec.png	
+|   +-- AccuracyVsTime20sec.png	
+|   +-- AccuracyVsTime4to20sec.png
+|   +-- AccuracyVsTime_200kIter.png
+|   +-- Distribution.png	
+|   +-- Efficiency.png
+|   +-- ElapsedTimeVsComputation.png	
+|   +-- PerformanceComparison1.png	
+|   +-- PerformanceComparison2.png	
+|   +-- PerformanceComparison3.png	
+|   +-- Speed.png
++-- SavedResults
+|   +-- IndividualRuns/
+    |   +--[Misc files]
+|   +-- dist_hist_ppt.npy
+|   +-- dist_hist_sa.npy
+|   +-- dist_hist_spt.npy
+|   +-- hist_best_ppt.npy
+|   +-- hist_best_sa.npy
+|   +-- hist_best_spt.npy
+|   +-- time_hist_ppt.npy
+|   +-- time_hist_sa.npy
+|   +-- time_hist_spt.npy
 +-- resources
 |   +-- a280.xml.zip
 |   +-- fri26.xml.zip
@@ -26,6 +46,10 @@ cs205-final-project
 +-- comparison.py     
 +-- controller.py     
 +-- parallel_tempering.py
++-- Report.ipynb
++-- TimingTest.py
++-- plotter.py
++-- ParameterSelectionPpt.py
 ```   
 
 There are multiple files that can serve as the starting point for the code in this repository. To run the code, enter `python <NAME_OF_FILE>` into the commandline.
@@ -48,57 +72,26 @@ Our code for parallel tempering, both in serial and in parallel, is located in `
 Several ipython notebooks are referenced as resources throughout the code. They are available at `resources/ipython_source_files.zip`.
 
 
-############################# Christian added:
-+-- Report.ipynb
-+-- TimingTest.py
-+-- plotter.py
-+-- ParameterSelectionPpt.py
-+-- Images	
-|   +-- AccuracyVsComputation.png	
-|   +-- AccuracyVsIterations.png	
-|   +-- AccuracyVsTime0to4sec.png	
-|   +-- AccuracyVsTime20sec.png	
-|   +-- AccuracyVsTime4to20sec.png
-|   +-- AccuracyVsTime_200kIter.png
-|   +-- Distribution.png	
-|   +-- Efficiency.png
-|   +-- ElapsedTimeVsComputation.png	
-|   +-- PerformanceComparison1.png	
-|   +-- PerformanceComparison2.png	
-|   +-- PerformanceComparison3.png	
-|   +-- Speed.png
-+-- SavedResults
-|   +-- IndividualRuns/
-|   +-- dist_hist_ppt.npy
-|   +-- dist_hist_sa.npy
-|   +-- dist_hist_spt.npy
-|   +-- hist_best_ppt.npy
-|   +-- hist_best_sa.npy
-|   +-- hist_best_spt.npy
-|   +-- time_hist_ppt.npy
-|   +-- time_hist_sa.npy
-|   +-- time_hist_spt.npy
-
 Report.ipynb 
-This is our project website.  This notebook gives the background for our project, describes our implementations, interprets our results, and discusses parallelism in the context of this project.  
+This is our project website. This notebook gives the background for our project, describes our implementations, interprets our results, and discusses parallelism in
+ the context of this project.  
 
 TimingTest.py 
-Performs many runs of each of the three optimization algorithms, averages their current path and run time at each step among the many iterations, and saves these files so that they can be plotted in plotter.py
+Performs many runs of each of the three optimization algorithms, averages their current path and run time at each step among the many iterations, and saves these files
+ so that they can be plotted in plotter.py
 
 plotter.py 
-Loads saved test results from TimingTest.py and plots them.  This function was used to generate all of the performance plots for the report.  
+Loads saved test results from TimingTest.py and plots them. This function was used to generate all of the performance plots for the report.  
 
 ParameterSelectionPpt.py 
-Performs a gradient descent parameter optimization for parallel parallel tempering.  The returned parameters are then used in TimingTest.py
+Performs a gradient descent parameter optimization for parallel parallel tempering. The returned parameters are then used in TimingTest.py
 
 Images/
-Contains all of the images that are referenced in the Report.  The images are loaded into the report notebook using IPython's display.Image() command.  
+Contains all of the images that are referenced in the Report. The images are loaded into the report notebook using IPython's display.Image() command.  
 
 SavedResults/
-Contains the output from several runs of TimingTest.py  These results are included so that the user can generate customized plots and perform analyses on the algorithms without having to re-run lengthy simulations.  The IndividualRuns/ subfolder contains the results from a single run of each algorithm, in case the user wants to observe individual runs rather than averaged results over many runs.  The time_hist__, hist_best__, and dist_hist__ files are averaged results from 25 runs.  The time_hist__ files contain average elapsed iteration times for 50,000 iteration runs, the dist_hist__ files contain the average best found distances at each iteration for 50,000 iteration runs, and the dist_hist__ files contain the average best found distances at each iteration for 1,000,000 iteration runs.  
-
-
-############################# End of Junge's new file descriptions for README
-
-
-SOMEONE WHO IS NOT DANA SHOULD TALK ABOUT THE WRITEUP FILES. BUT FIRST WE NEED TO ADD CHRISTIAN'S FILES TO THE WRITEUP FILES FOLDER.
+Contains the output from several runs of TimingTest.py  These results are included so that the user can generate customized plots and perform analyses on the
+ algorithms without having to re-run lengthy simulations. The IndividualRuns/ subfolder contains the results from a single run of each algorithm, in case the user
+ wants to observe individual runs rather than averaged results over many runs. The time_hist__, hist_best__, and dist_hist__ files are averaged results from 25 runs.
+ The time_hist__ files contain average elapsed iteration times for 50,000 iteration runs, the dist_hist__ files contain the average best found distances at each
+ iteration for 50,000 iteration runs, and the dist_hist__ files contain the average best found distances at each iteration for 1,000,000 iteration runs.  
