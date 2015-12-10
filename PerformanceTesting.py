@@ -45,7 +45,7 @@ if __name__ == '__main__':
 	reheat = initial_temps[0]                     # Reheats when it is as cold as the coldest PT process
 
 	# Number of runs per method:
-	runs = 5
+	runs = 25
 
 	with Timer() as t:
 
@@ -59,26 +59,27 @@ if __name__ == '__main__':
 
 			solution_ppt, histories_ppt = parallel_parallel_tempering(graph, distance, initial_Xs, initial_temps, iterr, changepath, nswaps, nbefore)
 			hist_best_ppt.append(hist_best(histories_ppt[0]))
-			print 'ppt, ', i
+			print 'Parallel Parallel Tempering, run ', i, ' complete.'
 
 			solution_spt, histories_spt = serial_parallel_tempering(graph, distance, initial_Xs, initial_temps, iterr, changepath, nswaps, nbefore)
 			hist_best_spt.append(hist_best(histories_spt[0]))
-			print 'spt, ', i
+			print 'Serial Parallel Tempering, run ', i, ' complete.'
 
 			solution_sa, history_sa = simulated_annealing(graph, distance, initial_Xs[0], initial_temps[0], nbefore, iterr, changepath, nswaps, reheat, cool)
 			hist_best_sa.append(hist_best(history_sa))
-			print 'sa , ', i
+			print 'Simulated Annealing, run ', i, ' complete.'
 
+		# Take the mean of each column, save these outputs so they can be plotted and examined without re-running simulations
 		hist_best_ppt = np.mean(hist_best_ppt, 0)
-		np.save('hist_best_ppt_5_3.npy', hist_best_ppt)
+		np.save('hist_best_ppt.npy', hist_best_ppt)
 		print 'saved ppt'
 
 		hist_best_spt = np.mean(hist_best_spt, 0)
-		np.save('hist_best_spt_5_3.npy', hist_best_spt)
+		np.save('hist_best_spt.npy', hist_best_spt)
 		print 'saved spt'
 		
 		hist_best_sa  = np.mean(hist_best_sa, 0)
-		np.save('hist_best_sa_5_3.npy' , hist_best_sa)
+		np.save('hist_best_sa.npy' , hist_best_sa)
 		print 'saved sa '
 
 	print "Time: " + str(t.interval) + "\n"

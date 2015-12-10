@@ -131,7 +131,7 @@ def serial_parallel_tempering(graph, function, initial_Xs, initial_temps,
 
 
     for i in xrange(nsystems):
-        history[i].append((prev_Es[i], initial_Xs[i], Ts[i], current_time))
+        history[i].append([prev_Es[i], initial_Xs[i], Ts[i], current_time])
 
     for step in range(iterr):
         for i in range(nsystems):
