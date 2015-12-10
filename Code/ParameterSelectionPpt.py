@@ -1,9 +1,10 @@
 import numpy as np
+from multiprocessing import freeze_support
+
 from annealing_helper_functions import distance, changepath, simulated_annealing
 from parallel_tempering import parallel_parallel_tempering, serial_parallel_tempering
-from timer import Timer
-from xml_parse import parse_xml_graph
-from multiprocessing import freeze_support
+from utils.timer import Timer
+from utils.xml_parse import parse_xml_graph
 
 
 if __name__ == '__main__':

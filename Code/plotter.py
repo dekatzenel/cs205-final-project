@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
+
 from annealing_helper_functions import distance
-from xml_parse import parse_xml_graph
+from utils.xml_parse import parse_xml_graph
 
 #### This function is a wrapper used to plot data that was created in multiple runs to compare performance.  
 

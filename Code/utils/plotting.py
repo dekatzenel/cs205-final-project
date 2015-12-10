@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from xml_parse import parse_xml_graph
 import networkx as nx
+
+from utils.xml_parse import parse_xml_graph
 
 def plot_graph(graph=None, path=None, dist=None, best=None, best_dist=None,
 			   save=False, name=None, title=None):

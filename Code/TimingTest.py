@@ -1,10 +1,11 @@
 import numpy as np
+from matplotlib import pylab as plt
+from multiprocessing import freeze_support
+
 from annealing_helper_functions import distance, changepath, simulated_annealing
 from parallel_tempering import parallel_parallel_tempering, serial_parallel_tempering
-from timer import Timer
-from xml_parse import parse_xml_graph
-from multiprocessing import freeze_support
-from matplotlib import pylab as plt
+from utils.timer import Timer
+from utils.xml_parse import parse_xml_graph
 
 # Helper function to return the history of the lowest value found and the elapsed time at that point
 def hist_best(history):
