@@ -6,6 +6,23 @@
 
 ```
 cs205-final-project     
++-- Code
+|   +-- resources
+    |   +-- a280.xml.zip
+    |   +-- fri26.xml.zip
+    |   +-- ipython_source_files.zip
+|   +-- utils     
+    |   +-- __init__.py     
+    |   +-- plotting.py     
+    |   +-- timer.py     
+    |   +-- xml_parse.py     
+|   +-- ParameterSelectionPpt.py
+|   +-- TimingTest.py
+|   +-- annealing_helper_functions.py     
+|   +-- comparison.py     
+|   +-- controller.py     
+|   +-- parallel_tempering.py
+|   +-- plotter.py
 +-- Images	
 |   +-- AccuracyVsComputation.png	
 |   +-- AccuracyVsIterations.png	
@@ -32,25 +49,12 @@ cs205-final-project
 |   +-- time_hist_ppt.npy
 |   +-- time_hist_sa.npy
 |   +-- time_hist_spt.npy
-+-- resources
-|   +-- a280.xml.zip
-|   +-- fri26.xml.zip
-|   +-- ipython_source_files.zip
-+-- utils     
-|   +-- __init__.py     
-|   +-- plotting.py     
-|   +-- timer.py     
-|   +-- xml_parse.py     
++-- .gitignore
 +-- README.md     
-+-- annealing_helper_functions.py     
-+-- comparison.py     
-+-- controller.py     
-+-- parallel_tempering.py
 +-- Report.ipynb
-+-- TimingTest.py
-+-- plotter.py
-+-- ParameterSelectionPpt.py
 ```   
+
+All code for this project is located inside of the `Code\` folder.
 
 There are multiple files that can serve as the starting point for the code in this repository. To run the code, enter `python <NAME_OF_FILE>` into the commandline.
 + `comparison.py` runs parallel tempering in both serial and parallel for iteration counts of 10^3, 10^4, 10^5, and 10^6 on
@@ -71,27 +75,26 @@ Our code for parallel tempering, both in serial and in parallel, is located in `
 
 Several ipython notebooks are referenced as resources throughout the code. They are available at `resources/ipython_source_files.zip`.
 
-
-Report.ipynb 
+`Report.ipynb` 
 This is our project website. This notebook gives the background for our project, describes our implementations, interprets our results, and discusses parallelism in
  the context of this project.  
 
-TimingTest.py 
+`TimingTest.py` 
 Performs many runs of each of the three optimization algorithms, averages their current path and run time at each step among the many iterations, and saves these files
- so that they can be plotted in plotter.py
+ so that they can be plotted in `plotter.py`
 
-plotter.py 
-Loads saved test results from TimingTest.py and plots them. This function was used to generate all of the performance plots for the report.  
+`plotter.py` 
+Loads saved test results from `TimingTest.py` and plots them. This function was used to generate all of the performance plots for the report.  
 
-ParameterSelectionPpt.py 
-Performs a gradient descent parameter optimization for parallel parallel tempering. The returned parameters are then used in TimingTest.py
+`ParameterSelectionPpt.py`
+Performs a gradient descent parameter optimization for parallel parallel tempering. The returned parameters are then used in `TimingTest.py`
 
-Images/
+`Images/`
 Contains all of the images that are referenced in the Report. The images are loaded into the report notebook using IPython's display.Image() command.  
 
-SavedResults/
-Contains the output from several runs of TimingTest.py  These results are included so that the user can generate customized plots and perform analyses on the
- algorithms without having to re-run lengthy simulations. The IndividualRuns/ subfolder contains the results from a single run of each algorithm, in case the user
- wants to observe individual runs rather than averaged results over many runs. The time_hist__, hist_best__, and dist_hist__ files are averaged results from 25 runs.
- The time_hist__ files contain average elapsed iteration times for 50,000 iteration runs, the dist_hist__ files contain the average best found distances at each
- iteration for 50,000 iteration runs, and the dist_hist__ files contain the average best found distances at each iteration for 1,000,000 iteration runs.  
+`SavedResults/`
+Contains the output from several runs of `TimingTest.py`  These results are included so that the user can generate customized plots and perform analyses on the
+ algorithms without having to re-run lengthy simulations. The `IndividualRuns/` subfolder contains the results from a single run of each algorithm, in case the user
+ wants to observe individual runs rather than averaged results over many runs. The `time_hist__`, `hist_best__`, and `dist_hist__` files are averaged results from 25 runs.
+ The `time_hist__` files contain average elapsed iteration times for 50,000 iteration runs, the `dist_hist__` files contain the average best found distances at each
+ iteration for 50,000 iteration runs, and the `dist_hist__` files contain the average best found distances at each iteration for 1,000,000 iteration runs.  
