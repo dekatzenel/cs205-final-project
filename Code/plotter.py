@@ -6,7 +6,7 @@ from utils.xml_parse import parse_xml_graph
 
 #### This function is a wrapper used to plot data that was created in multiple runs to compare performance.  
 
-graph = parse_xml_graph('fri26.xml')
+graph = parse_xml_graph('resources/fri26.xml')
 bestpath = np.asarray([x-1 for x in [1, 25, 24, 23, 26, 22, 21, 17, 18, 20, 19, 16, 11, 12, 13, 15, 14, 10, 9, 8, 7, 5, 6, 4, 3, 2]])
 optimum = distance(graph, bestpath)
 

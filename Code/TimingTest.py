@@ -35,7 +35,7 @@ if __name__ == '__main__':
 	freeze_support()
 
     # Load graph
-	graph = parse_xml_graph('fri26.xml')
+	graph = parse_xml_graph('resources/fri26.xml')
 	
 	#Square matrix
 	assert graph.shape[0] == graph.shape[1]
