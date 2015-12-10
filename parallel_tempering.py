@@ -46,14 +46,15 @@ def serial_parallel_tempering(graph, function, initial_Xs, initial_temps,
     history = [[] for i in xrange(nsystems)]
     best_path = []
     best_path_value = float('inf')
+    current_time = time.time()
 
     for i in xrange(nsystems):
-        history[i].append((prev_Es[i], initial_Xs[i]))
+        history[i].append([prev_Es[i], initial_Xs[i], Ts[i], current_time])
 
     for step in range(iterr):
         for i in range(nsystems):
             # Run nbefore steps of simulated annealing
-            Xs[i], prev_Es[i], delta_Es[i], history[i], _ = 
+            Xs[i], prev_Es[i], delta_Es[i], history[i], _ =\
                     anneal_once(graph, function, Xs[i], Ts[i], prev_Es[i],
                                 history[i], swap_function, nswaps)
             # Store best path
