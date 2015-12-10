@@ -104,18 +104,18 @@ if __name__ == '__main__':
 		dist_hist_ppt = np.mean(dist_hist_ppt, 0)
 		time_hist_ppt = np.mean(time_hist_ppt, 0)
 		# Save results to plot in plotter.py
-		np.save('./SavedResults/time_hist_ppt.npy', time_hist_ppt)
-		np.save('./SavedResults/dist_hist_ppt.npy', dist_hist_ppt)
+		np.save('../SavedResults/time_hist_ppt.npy', time_hist_ppt)
+		np.save('../SavedResults/dist_hist_ppt.npy', dist_hist_ppt)
 
 		dist_hist_spt = np.mean(dist_hist_spt, 0)
 		time_hist_spt = np.mean(time_hist_spt, 0)
-		np.save('./SavedResults/time_hist_spt.npy', time_hist_spt)
-		np.save('./SavedResults/dist_hist_spt.npy', dist_hist_spt)
+		np.save('../SavedResults/time_hist_spt.npy', time_hist_spt)
+		np.save('../SavedResults/dist_hist_spt.npy', dist_hist_spt)
 		
 		dist_hist_sa  = np.mean(dist_hist_sa, 0)
 		time_hist_sa  = np.mean(time_hist_sa, 0)
-		np.save('./SavedResults/time_hist_sa.npy', time_hist_sa)
-		np.save('./SavedResults/dist_hist_sa.npy', dist_hist_sa)
+		np.save('../SavedResults/time_hist_sa.npy', time_hist_sa)
+		np.save('../SavedResults/dist_hist_sa.npy', dist_hist_sa)
 		
 	print "Time: " + str(t.interval) + "\n"
 
