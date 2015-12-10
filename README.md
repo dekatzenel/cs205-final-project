@@ -41,3 +41,10 @@ There are multiple files that can serve as the starting point for the code in th
 There are two files that contain data that can be converted into graphs to be used in TSP. Both are located in `resources/`. 
 + `fri26.xml.zip` is our primary file on which we performed most of our testing. It has 26 nodes.
 + `a280.xml.zip` is a larger file with 280 nodes. We used it to check how our results scaled to larger data sets.
+
+Our code for parallel tempering, both in serial and in parallel, is located in `parallel_tempering.py`. Both functions make extensive use of the `anneal_once()` and
+ related functions in `annealing_helper_functions.py`. The code for simulated annealing is also located in `annealing_helper_functions.py`
+
+Several ipython notebooks are referenced as resources throughout the code. They are available at `resources/ipython_source_files.zip`.
+
+SOMEONE WHO IS NOT DANA SHOULD TALK ABOUT THE WRITEUP FILES. BUT FIRST WE NEED TO ADD CHRISTIAN'S FILES TO THE WRITEUP FILES FOLDER.
