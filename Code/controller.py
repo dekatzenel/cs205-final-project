@@ -1,11 +1,11 @@
 import numpy as np
+from multiprocessing import freeze_support
 
 from annealing_helper_functions import distance, changepath, simulated_annealing
 from parallel_tempering import serial_parallel_tempering, parallel_parallel_tempering
-from plotting import get_plots
-from timer import Timer
-from multiprocessing import freeze_support
-from xml_parse import parse_xml_graph
+from utils.plotting import get_plots
+from utils.timer import Timer
+from utils.xml_parse import parse_xml_graph
 
 if __name__ == '__main__':
 	# Necessary to make multiprocessing work on Windows:
@@ -15,16 +15,16 @@ if __name__ == '__main__':
 	# get_plots(history, graph=None, best=bestpath, 
 	#           best_dist=distance(graph, bestpath))
 
-	graph = parse_xml_graph('fri26.xml')
+	graph = parse_xml_graph('resources/fri26.xml')
 
 	# Square matrix
 	assert graph.shape[0] == graph.shape[1]
 	size = graph.shape[0]
 
 	# Hardcoded best path to validate distance calculations, zero-indexed
-	bestpath = np.asarray([x-1 for x in [1, 25, 24, 23, 26, 22, 21, 17, 18, 20, 19,
-	                                     16, 11, 12, 13, 15, 14, 10, 9, 8, 7, 5, 6,
-	                                     4, 3, 2]])
+	bestpath = np.asarray([x-1 for x in [1, 25, 24, 23, 26, 22, 21, 17, 18,
+                                          20, 19, 16, 11, 12, 13, 15, 14, 10,
+                                          9, 8, 7, 5, 6, 4, 3, 2]])
 	print "Best path: " + str(bestpath)
 	print "Best path length: " + str(distance(graph, bestpath)) + "\n"
 
@@ -43,9 +43,10 @@ if __name__ == '__main__':
 	for iterr in [10**x for x in [3, 4, 5]]:
 		with Timer() as t:
 			solution, history = simulated_annealing(graph, distance,
-	                                                   initial_path, initial_temp,
-	                                                   nbefore, iterr,
-	                                                   changepath, nswaps, reheat, cool)
+	                                                   initial_path,
+                                                         initial_temp, nbefore,
+                                                         iterr, changepath,
+                                                         nswaps, reheat, cool)
 		print "Iterations: {:.2E}".format(iterr)
 		print "Calculated path: " + str(solution)
 		print "Calculated path length: " + str(distance(graph, solution))
@@ -65,9 +66,10 @@ if __name__ == '__main__':
 		with Timer() as t:
 			solution, history = serial_parallel_tempering(graph, distance,
 	                                                         initial_paths, 
-	                                                         initial_temps, iterr,
-	                                                         changepath, nswaps,
-	                                                         nbefore)
+	                                                         initial_temps, 
+                                                               iterr,
+                                                               changepath,
+                                                               nswaps, nbefore)
 
 		print "Iterations: {:.2E}".format(iterr)
 		print "Calculated path: " + str(solution)
@@ -82,7 +84,8 @@ if __name__ == '__main__':
 			solution, history = parallel_parallel_tempering(graph, distance,
 	                                                           initial_paths, 
 	                                                           initial_temps,
-	                                                           iterr, changepath,
+	                                                           iterr,
+                                                                 changepath,
 	                                                           nswaps, nbefore)
 
 		print "Iterations: {:.2E}".format(iterr)
