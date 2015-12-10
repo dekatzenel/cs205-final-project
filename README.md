@@ -13,7 +13,7 @@ cs205-final-project
 |   +-- results.txt     
 |   +-- script.txt     
 +-- utils     
-|   +-- \__init__.py     
+|   +-- __init__.py     
 |   +-- plotting.py     
 |   +-- timer.py     
 |   +-- xml_parse.py     
@@ -23,3 +23,8 @@ cs205-final-project
 +-- controller.py     
 +-- parallel_tempering.py
 ```   
+
+There are multiple files that can serve as the starting point for the code in this repository. To run the code, enter `python <NAME_OF_FILE>` into the commandline.
+
++ comparison.py
++ controller.py
