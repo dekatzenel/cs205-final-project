@@ -44,7 +44,7 @@ if __name__ == '__main__':
 	initial_temps = [1., np.sqrt(5), np.sqrt(5)**2, np.sqrt(5)**3]
 
 	# # Run serial parallel tempering
-	with open('results.txt', 'w') as f:
+	with open('../SavedResults/results.txt', 'w') as f:
 		f.write("\nSerial Parallel Tempering\n")
 		f.write('Iter   Path   Time\n')
 		for iterr in [10**x for x in [3, 4, 5, 6]]:
