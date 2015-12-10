@@ -2,9 +2,9 @@ import numpy as np
 
 from annealing_helper_functions import distance, changepath, simulated_annealing, serial_parallel_tempering
 from parallelism import parallel_parallel_tempering
-from timer import Timer
-from xml_parse import parse_xml_graph
-from plotting import get_plots
+from utils.plotting import get_plots
+from utils.timer import Timer
+from utils.xml_parse import parse_xml_graph
 
 # Uncomment and/or move this to generate plots
 # get_plots(history, graph=None, best=bestpath, best_dist=distance(graph, bestpath))
